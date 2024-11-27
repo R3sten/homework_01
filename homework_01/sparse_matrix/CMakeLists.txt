@@ -1,0 +1,4 @@
+add_library(sparse_matrix_COO src/sparse_matrix_COO.cpp)
+target_link_libraries(sparse_matrix_COO PUBLIC cxx_setup)
+
+add_subdirectory(tests)

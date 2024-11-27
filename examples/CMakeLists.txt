@@ -1,0 +1,2 @@
+add_executable(sparse_matrix_COO_example sparse_matrix_COO_example.cpp)
+target_link_libraries(sparse_matrix_COO_example PRIVATE sparse_matrix_COO cxx_setup)
