@@ -97,7 +97,8 @@ SparseMatrixCOO::SparseMatrixCOOProxy::operator=(
   _matrixEntry = otherProxy._matrixEntry;
   return *this;
 }
-
+/// Additional comments about the specific implementation.
+/// @todo chiedi informazioni riguardo l'errore
 SparseMatrixCOO::SparseMatrixCOOProxy
 SparseMatrixCOO::operator()(const int &i, const int &j) {
   if (i < 0 || i > _matrixHeight || j < 0 || j > _matrixWidth) {

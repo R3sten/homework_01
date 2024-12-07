@@ -39,13 +39,13 @@ protected:
     operator double() const;
 
     /// @brief Writing operator.
-    /// @param x Input value to add to the matrix at the (i, j) position.
+    /// @param newEntry Value to be added to the matrix at the (i, j) position.
     /// @return A reference to the specified matrix element.
     SparseMatrixCOOProxy &operator=(const double &newEntry);
 
     /// @brief Copy assignment operator.
-    /// @param other The matrix element to be copied to the left matrix element
-    /// instance.
+    /// @param otherProxy The matrix element to be copied to the left matrix
+    /// element instance.
     /// @return A reference to the left matrix element.
     SparseMatrixCOOProxy &operator=(SparseMatrixCOOProxy &otherProxy);
     //! The input is not const becouse that gives copy errors
