@@ -68,9 +68,9 @@ TEST_F(SparseMatrixCOOTest, writeZeroEntry) {
 TEST_F(SparseMatrixCOOTest, copyNonZeroToZero) {
   //!!SE nell'input dell'operatore di copy c'è const
   //!!Con (1,1) o con (6,2) NON funziona ma con (5,2) e (3,1), (1,0) SI ?!?!
-  //!!indipendentemente dalla null entry su cui scrivo
+  //!!indipendentemente dalla zero entry su cui scrivo
   (*testMatrix)(0, 0) = (*testMatrix)(1, 1);
-  EXPECT_EQ(1, (*testMatrix)(0, 0));
+  EXPECT_EQ(10, (*testMatrix)(0, 0));
 }
 
 TEST_F(SparseMatrixCOOTest, copyZeroToNonZero) {

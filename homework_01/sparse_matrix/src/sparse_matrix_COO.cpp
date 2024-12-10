@@ -40,6 +40,25 @@ int SparseMatrixCOO::getNumberOfNonZeros() const {
 }
 
 double &SparseMatrixCOO::_getMatrixEntry(const int &i, const int &j) {
+  std::cout << "Coordinates : " << i << " " << j << std::endl;
+  std::cout << std::endl;
+  std::cout << "Initial values: " << std::endl;
+  std::cout << "rows:" << std::endl;
+  for (double v : _rows) {
+    std::cout << v << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "columns:" << std::endl;
+  for (double v : _columns) {
+    std::cout << v << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "values:" << std::endl;
+  for (double v : _values) {
+    std::cout << v << " ";
+  }
+  std::cout << std::endl;
+
   for (int idx = 0; idx < _rows.size(); ++idx) {
     if (_rows.at(idx) == i) {
       if (_columns.at(idx) == j) {
@@ -87,16 +106,22 @@ SparseMatrixCOO::SparseMatrixCOOProxy::operator double() const {
 
 SparseMatrixCOO::SparseMatrixCOOProxy &
 SparseMatrixCOO::SparseMatrixCOOProxy::operator=(const double &newEntry) {
+  std::cout << "Writing operator()= called" << std::endl;
   _matrixEntry = newEntry;
   return *this;
 }
 
 SparseMatrixCOO::SparseMatrixCOOProxy &
 SparseMatrixCOO::SparseMatrixCOOProxy::operator=(
-    SparseMatrixCOOProxy &otherProxy) {
+    const SparseMatrixCOOProxy &otherProxy) {
+  std::cout << "Copy operator()= called" << std::endl;
+  std::cout << "Matrix entry before: " << _matrixEntry << std::endl;
+  std::cout << "Other entry: " << otherProxy._matrixEntry << std::endl;
   _matrixEntry = otherProxy._matrixEntry;
+  std::cout << "Matrix entry after: " << _matrixEntry << std::endl;
   return *this;
 }
+
 /// Additional comments about the specific implementation.
 /// @todo chiedi informazioni riguardo l'errore
 SparseMatrixCOO::SparseMatrixCOOProxy

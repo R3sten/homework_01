@@ -17,6 +17,11 @@ private:
   /// @brief Matrix's number of columns
   int _matrixWidth;
 
+  /// @brief An internal function used to access matrix entry elements throught
+  /// coordinates
+  /// @param i A non negative number representing row index
+  /// @param j A non negative number representing column index
+  /// @return A reference to the selected matrix entry
   double &_getMatrixEntry(const int &i, const int &j);
   void _eraseNullEntry();
 
@@ -47,15 +52,13 @@ protected:
     /// @param otherProxy The matrix element to be copied to the left matrix
     /// element instance.
     /// @return A reference to the left matrix element.
-    SparseMatrixCOOProxy &operator=(SparseMatrixCOOProxy &otherProxy);
+    SparseMatrixCOOProxy &operator=(const SparseMatrixCOOProxy &otherProxy);
     //! The input is not const becouse that gives copy errors
-    //!! It took a day for me to find that out :(
   };
 
 public:
   SparseMatrixCOO(std::vector<int> &rows, std::vector<int> &columns,
                   std::vector<double> &values);
-  // SparseMatrixCOO(double *matrix);
   ~SparseMatrixCOO();
 
   const int &getNumberOfRows() const;
