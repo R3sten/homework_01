@@ -18,46 +18,9 @@ const int &SparseMatrixCOO::getNumberOfRows() const { return _matrixHeight; }
 
 const int &SparseMatrixCOO::getNumberOfColumns() const { return _matrixWidth; }
 
-int SparseMatrixCOO::getNumberOfNonZeros() const {
-  std::cout << "rows:" << std::endl;
-  for (double v : _rows) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
-  std::cout << "columns:" << std::endl;
-  for (double v : _columns) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
-  std::cout << "values:" << std::endl;
-  for (double v : _values) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-  return _values.size();
-}
+int SparseMatrixCOO::getNumberOfNonZeros() const { return _values.size(); }
 
 double &SparseMatrixCOO::_getMatrixEntry(const int &i, const int &j) {
-  std::cout << "Coordinates : " << i << " " << j << std::endl;
-  std::cout << std::endl;
-  std::cout << "Initial values: " << std::endl;
-  std::cout << "rows:" << std::endl;
-  for (double v : _rows) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
-  std::cout << "columns:" << std::endl;
-  for (double v : _columns) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
-  std::cout << "values:" << std::endl;
-  for (double v : _values) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
 
   for (int idx = 0; idx < _rows.size(); ++idx) {
     if (_rows.at(idx) == i) {
