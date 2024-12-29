@@ -1,7 +1,10 @@
 if(BUILD_TESTING)
     add_executable(sparse_matrix_COO_test sparse_matrix_COO_test.cpp)
+    add_executable(sparse_matrix_CSR_test sparse_matrix_CSR_test.cpp)
     target_link_libraries(sparse_matrix_COO_test PRIVATE GTest::gtest_main sparse_matrix)
+    target_link_libraries(sparse_matrix_CSR_test PRIVATE GTest::gtest_main sparse_matrix)
 
     include(GoogleTest)
     gtest_discover_tests(sparse_matrix_COO_test)
+    gtest_discover_tests(sparse_matrix_CSR_test)
 endif()

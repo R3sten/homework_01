@@ -109,6 +109,12 @@ CASE_SENSE_NAMES       = YES
 
 ENABLED_SECTIONS       =
 
+ENABLE_PREPROCESSING = YES
+MACRO_EXPANSION = YES
+EXPAND_ONLY_PREDEF = YES
+PREDEFINED = protected=private
+INHERIT_DOCS           = YES
+
 #---------------------------------------------------------------------------
 # Configuration options related to warning and progress messages
 #---------------------------------------------------------------------------

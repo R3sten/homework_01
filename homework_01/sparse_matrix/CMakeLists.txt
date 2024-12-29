@@ -1,4 +1,4 @@
-set(SRCS "src/sparse_matrix_COO.cpp")
+set(SRCS "src/sparse_matrix_COO.cpp;src/sparse_matrix_CSR.cpp;src/sparse_matrix.cpp")
 set(INCLUDE_DIRS "include")
 
 add_library(sparse_matrix STATIC ${SRCS})

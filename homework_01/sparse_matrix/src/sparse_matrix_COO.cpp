@@ -4,50 +4,27 @@
 #include <sstream>
 #include <vector>
 
-SparseMatrixCOO::SparseMatrixCOO(std::vector<int> &rows,
-                                 std::vector<int> &columns,
-                                 std::vector<double> &values)
-    : _rows(rows), _columns(columns), _values(values) {
-  _matrixWidth = *std::max_element(_columns.begin(), _columns.end()) + 1;
+SparseMatrixCOO::SparseMatrixCOO(const std::vector<double> &values,
+                                 const std::vector<int> &columns,
+                                 const std::vector<int> &rows,
+                                 const int &height, const int &width)
+    : SparseMatrix(values, columns, height, width), _rows(rows) {
+
   _matrixHeight = *std::max_element(_rows.begin(), _rows.end()) + 1;
-}
-
-SparseMatrixCOO::SparseMatrixCOO(const SparseMatrixCOO &other)
-    : _rows(other._rows), _columns(other._columns), _values(other._values),
-      _matrixHeight(other._matrixHeight), _matrixWidth(other._matrixWidth) {}
-
-SparseMatrixCOO::~SparseMatrixCOO() {}
-
-const int &SparseMatrixCOO::getNumberOfRows() const { return _matrixHeight; }
-
-const int &SparseMatrixCOO::getNumberOfColumns() const { return _matrixWidth; }
-
-int SparseMatrixCOO::getNumberOfNonZeros() const {
-  for (unsigned int i = 0; i < _values.size(); ++i) {
-    std::cout << _values[i] << " ";
+  if (height > _matrixHeight) {
+    _matrixHeight = height;
   }
-  std::cout << std::endl;
-  return _values.size();
-}
-
-SparseMatrixCOO &SparseMatrixCOO::operator=(const SparseMatrixCOO &other) {
-  if (this != &other) {
-    _rows = other._rows;
-    _columns = other._columns;
-    _values = other._values;
-    _matrixHeight = other._matrixHeight;
-    _matrixWidth = other._matrixWidth;
+  _matrixWidth = *std::max_element(_columns.begin(), _columns.end()) + 1;
+  if (width > _matrixWidth) {
+    _matrixWidth = width;
   }
-  return *this;
 }
 
 int SparseMatrixCOO::_getMatrixEntry(const int &i, const int &j) {
   int lastIndex = _rows.size();
   for (int idx = 0; idx < lastIndex; ++idx) {
-    if (_rows[idx] == i) {
-      if (_columns[idx] == j) {
-        return idx;
-      }
+    if (_rows[idx] == i && _columns[idx] == j) {
+      return idx;
     }
   }
   // creates the entry if does not exist
@@ -65,14 +42,6 @@ void SparseMatrixCOO::eraseZeroEntries() {
       _columns.erase(_columns.begin() + idx);
     }
   }
-}
-
-void SparseMatrixCOO::extendMatrixWidth(int newWidth) {
-  _matrixWidth = newWidth;
-}
-
-void SparseMatrixCOO::extendMatrixHeight(int newHeight) {
-  _matrixHeight = newHeight;
 }
 
 std::vector<double> SparseMatrixCOO::operator*(const std::vector<double> &x) {
@@ -118,34 +87,11 @@ void SparseMatrixCOO::printMatrix() {
   }
 }
 
-SparseMatrixCOO::SparseMatrixCOOProxy::SparseMatrixCOOProxy(
-    int idx, SparseMatrixCOO &matrix)
-    : _idx(idx), _matrix(matrix) {}
-
-SparseMatrixCOO::SparseMatrixCOOProxy::~SparseMatrixCOOProxy() {}
-
-SparseMatrixCOO::SparseMatrixCOOProxy::operator double() const {
-  return _matrix._values[_idx];
-}
-
-SparseMatrixCOO::SparseMatrixCOOProxy &
-SparseMatrixCOO::SparseMatrixCOOProxy::operator=(const double &newEntry) {
-  _matrix._values[_idx] = newEntry;
-  return *this;
-}
-
-SparseMatrixCOO::SparseMatrixCOOProxy &
-SparseMatrixCOO::SparseMatrixCOOProxy::operator=(
-    const SparseMatrixCOOProxy &other) {
-  _matrix._values[_idx] = other._matrix._values[other._idx];
-  return *this;
-}
-
-/// Throws an error if indices are out of bound.
-SparseMatrixCOO::SparseMatrixCOOProxy
-SparseMatrixCOO::operator()(const int &i, const int &j) {
+/// @copydoc SparseMatrix::operator()(const int &i, const int &j)
+/// @details Throws an error if indices are out of bound.
+double &SparseMatrixCOO::operator()(const int &i, const int &j) {
   if (i < 0 || i > _matrixHeight || j < 0 || j > _matrixWidth) {
     throw std::runtime_error("Indices out of bound.");
   }
-  return SparseMatrixCOO::SparseMatrixCOOProxy(_getMatrixEntry(i, j), *this);
+  return _values[_getMatrixEntry(i, j)];
 }

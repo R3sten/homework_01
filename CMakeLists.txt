@@ -21,7 +21,7 @@ include(cmake/UpdateSubmodules.cmake)
 include(CTest)
 
 add_subdirectory("${PROJECT_NAME}")
-add_subdirectory(examples)
+# add_subdirectory(examples)
 add_subdirectory(external)
 
 if(CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
