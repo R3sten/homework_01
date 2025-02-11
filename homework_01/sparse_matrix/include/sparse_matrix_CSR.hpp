@@ -5,9 +5,14 @@
 #include "sparse_matrix_COO.hpp"
 #include <vector>
 
+// Forward declaration of SparseMatrixCOO implementation
+template <typename T> class SparseMatrixCOO;
+
 /// @brief A class implementing Compressed Sparse Row Matrix storage scheme.
 /// Values have to be allocated in the same order they appear in the matrix.
-class SparseMatrixCSR : public SparseMatrix {
+/// @tparam Type of the numbers that will be assigned into the matrix. Default
+/// type is set to double.
+template <typename T = double> class SparseMatrixCSR : public SparseMatrix<T> {
 private:
   /// @brief Cumulative number of nonzero entries up to the i-throw (excluded).
   /// The size of this vector is m + 1, m being the number of rows of the
@@ -16,20 +21,33 @@ private:
 
   int _getMatrixEntry(const int &i, const int &j) override;
 
+  using SparseMatrix<T>::_values;
+  using SparseMatrix<T>::_columns;
+  using SparseMatrix<T>::_matrixHeight;
+  using SparseMatrix<T>::_matrixWidth;
+
 public:
   /// Constructor.
-  SparseMatrixCSR(const std::vector<double> &values,
-                  const std::vector<int> &columns,
+  SparseMatrixCSR(const std::vector<T> &values, const std::vector<int> &columns,
                   const std::vector<int> &rowIdx, const int &height = 0,
                   const int &width = 0);
 
-  double &operator()(const int &i, const int &j) override;
+  T &operator()(const int &i, const int &j) override;
 
   void eraseZeroEntries() override;
 
-  std::vector<double> operator*(const std::vector<double> &x) override;
+  std::vector<T> operator*(const std::vector<T> &x) const override;
 
-  void printMatrix() override;
+  void printMatrix() const override;
+
+  std::vector<int> getNonZeroEntriesRows() const override;
+
+  /// @brief Creates a copy of the current sparse matrix stored with the
+  /// Coordinate storage scheme.
+  /// @return A SparseMatrixCOO object with the same nonzero values.
+  SparseMatrixCOO<T> toCooridnateStorageScheme();
 };
+
+#include "sparse_matrix_CSR.tpl.hpp"
 
 #endif /* __SPARSE_MATRIX_CSR__ */

@@ -1,3 +1,4 @@
+#include "sparse_matrix_COO.hpp"
 #include "sparse_matrix_CSR.hpp"
 #include <gtest/gtest.h>
 #include <vector>
@@ -19,10 +20,10 @@ protected:
   }
 
   // Resource shared by all tests.
-  static SparseMatrixCSR *testMatrix;
+  static SparseMatrixCSR<> *testMatrix;
 };
 
-SparseMatrixCSR *SparseMatrixCSRTest::testMatrix = nullptr;
+SparseMatrixCSR<> *SparseMatrixCSRTest::testMatrix = nullptr;
 
 TEST_F(SparseMatrixCSRTest, getNumberOfRows) {
   EXPECT_EQ(7, testMatrix->getNumberOfRows());
@@ -189,4 +190,14 @@ TEST_F(SparseMatrixCSRTest, printMatrix) {
   testMatrix->printMatrix();
   std::string output = testing::internal::GetCapturedStdout();
   EXPECT_EQ(expectedOutput, output);
+}
+
+TEST_F(SparseMatrixCSRTest, toCoordinateStorageScheme) {
+  std::vector<double> orderedCOOValues{0.1, 1, 11.3, 4, 2};
+  std::vector<int> orderedCOOColumns{0, 1, 1, 2, 2};
+  std::vector<int> orderedCOORows{1, 1, 3, 5, 6};
+  SparseMatrixCOO expectedMatrix =
+      SparseMatrixCOO(orderedCOOValues, orderedCOOColumns, orderedCOORows);
+  SparseMatrixCOO convertedMatrix = testMatrix->toCooridnateStorageScheme();
+  EXPECT_EQ(expectedMatrix, convertedMatrix);
 }

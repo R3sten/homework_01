@@ -19,10 +19,10 @@ protected:
   }
 
   // Resource shared by all tests.
-  static SparseMatrixCOO *testMatrix;
+  static SparseMatrixCOO<> *testMatrix;
 };
 
-SparseMatrixCOO *SparseMatrixCOOTest::testMatrix = nullptr;
+SparseMatrixCOO<> *SparseMatrixCOOTest::testMatrix = nullptr;
 
 TEST_F(SparseMatrixCOOTest, getNumberOfRows) {
   EXPECT_EQ(7, testMatrix->getNumberOfRows());
@@ -189,4 +189,26 @@ TEST_F(SparseMatrixCOOTest, printMatrix) {
   testMatrix->printMatrix();
   std::string output = testing::internal::GetCapturedStdout();
   EXPECT_EQ(expectedOutput, output);
+}
+
+TEST_F(SparseMatrixCOOTest, toCompressedRowStorageSchemeORDERED) {
+  std::vector<double> orderedValues{0.1, 1, 11.3, 4, 2};
+  std::vector<int> orderedColumns{0, 1, 1, 2, 2};
+  std::vector<int> orderedRows{1, 1, 3, 5, 6};
+  std::vector<int> rowIdx{0, 0, 2, 2, 3, 3, 4, 5};
+  SparseMatrixCOO ordered =
+      SparseMatrixCOO(orderedValues, orderedColumns, orderedRows);
+  SparseMatrixCSR expectedMatrix =
+      SparseMatrixCSR(orderedValues, orderedColumns, rowIdx);
+  SparseMatrixCSR convertedMatrix = ordered.toCompressedRowStorageScheme();
+  EXPECT_EQ(expectedMatrix, convertedMatrix);
+}
+
+TEST_F(SparseMatrixCOOTest, toCompressedRowStorageSchemeUNORDERED) {
+  std::vector<double> values{0.1, 1, 11.3, 4, 2};
+  std::vector<int> columns{0, 1, 1, 2, 2};
+  std::vector<int> rowIdx{0, 0, 2, 2, 3, 3, 4, 5};
+  SparseMatrixCSR expectedMatrix = SparseMatrixCSR(values, columns, rowIdx);
+  SparseMatrixCSR convertedMatrix = testMatrix->toCompressedRowStorageScheme();
+  EXPECT_EQ(expectedMatrix, convertedMatrix);
 }

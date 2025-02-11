@@ -4,23 +4,29 @@
 #include <sstream>
 #include <vector>
 
-SparseMatrixCSR::SparseMatrixCSR(const std::vector<double> &values,
-                                 const std::vector<int> &columns,
-                                 const std::vector<int> &rowIdx,
-                                 const int &height, const int &width)
-    : SparseMatrix(values, columns, height, width), _rowIdx(rowIdx) {
-  _matrixHeight = _rowIdx.size() - 1;
+template <typename T>
+SparseMatrixCSR<T>::SparseMatrixCSR(const std::vector<T> &values,
+                                    const std::vector<int> &columns,
+                                    const std::vector<int> &rowIdx,
+                                    const int &height, const int &width)
+    : SparseMatrix<T>(values, columns, height, width), _rowIdx(rowIdx) {
+  // assigning matrix boudaries choosing between user input and nonzero entries
+  // positions into the matrix
+  _matrixHeight = rowIdx.size() - 1;
   if (height > _matrixHeight) {
     _matrixHeight = height;
   }
-  _matrixWidth = *std::max_element(_columns.begin(), _columns.end()) + 1;
+  _matrixWidth = *std::max_element(columns.begin(), columns.end()) + 1;
   if (width > _matrixWidth) {
     _matrixWidth = width;
   }
 }
 
-// TODO: add comments
-int SparseMatrixCSR::_getMatrixEntry(const int &i, const int &j) {
+/// @copydoc SparseMatrix::_getMatrixEntry(const int &i, const int &j)
+/// Needs data to be ordered as it appears into the matrix reading it from left
+/// to right and upper down.
+template <typename T>
+int SparseMatrixCSR<T>::_getMatrixEntry(const int &i, const int &j) {
   int upperIndex = _rowIdx[i + 1];
   int lowerIndex = _rowIdx[i];
   for (int idx = lowerIndex; idx < upperIndex; ++idx) {
@@ -52,15 +58,16 @@ int SparseMatrixCSR::_getMatrixEntry(const int &i, const int &j) {
 
 /// @copydoc SparseMatrix::operator()(const int &i, const int &j)
 /// @details  Throws an error if indices are out of bound.
-double &SparseMatrixCSR::operator()(const int &i, const int &j) {
+template <typename T>
+T &SparseMatrixCSR<T>::operator()(const int &i, const int &j) {
   if (i < 0 || i > _matrixHeight || j < 0 || j > _matrixWidth) {
     throw std::runtime_error("Indices out of bound.");
   }
 
   return _values[_getMatrixEntry(i, j)];
 }
-// TODO: add additional doc/comments
-void SparseMatrixCSR::eraseZeroEntries() {
+
+template <typename T> void SparseMatrixCSR<T>::eraseZeroEntries() {
   for (int idx = _values.size() - 1; idx >= 0; --idx) {
     if (_values[idx] == 0) {
       for (unsigned int i = 0; i < _rowIdx.size() - 1; ++i) {
@@ -77,8 +84,8 @@ void SparseMatrixCSR::eraseZeroEntries() {
   }
 }
 
-// TODO add additional doc/comments
-std::vector<double> SparseMatrixCSR::operator*(const std::vector<double> &x) {
+template <typename T>
+std::vector<T> SparseMatrixCSR<T>::operator*(const std::vector<T> &x) const {
   int xSize = x.size();
   if (xSize != _matrixWidth) {
     std::string errorText =
@@ -100,8 +107,7 @@ std::vector<double> SparseMatrixCSR::operator*(const std::vector<double> &x) {
   return result;
 }
 
-// TODO add additional doc/comments
-void SparseMatrixCSR::printMatrix() {
+template <typename T> void SparseMatrixCSR<T>::printMatrix() const {
   for (int i = 0; i < _matrixHeight; ++i) {
     for (int j = 0; j < _matrixWidth; ++j) {
       bool isZero = true;
@@ -122,4 +128,20 @@ void SparseMatrixCSR::printMatrix() {
     }
     std::cout << std::endl;
   }
+}
+
+template <typename T>
+std::vector<int> SparseMatrixCSR<T>::getNonZeroEntriesRows() const {
+  std::vector<int> rows{};
+  for (unsigned int i = 0; i < _rowIdx.size() - 1; ++i) {
+    rows.insert(rows.begin() + _rowIdx[i], _rowIdx[i + 1] - _rowIdx[i], i);
+  }
+  const std::vector<int> constRows = rows;
+  return constRows;
+}
+
+template <typename T>
+SparseMatrixCOO<T> SparseMatrixCSR<T>::toCooridnateStorageScheme() {
+  return SparseMatrixCOO<T>(_values, _columns, getNonZeroEntriesRows(),
+                            _matrixHeight, _matrixWidth);
 }
